@@ -1,0 +1,53 @@
+[
+    {
+      "typeCargaison": "Aerienne",
+      "id": "cargaison-1",
+      "poidsMax": 1000,
+      "volumeMax": 2000,
+      "dateDepart": "2024-05-28T08:00:00.000Z",
+      "dateArrivee": "2024-06-05T16:00:00.000Z",
+      "startLocation": "Paris",
+      "endLocation": "New York",
+      "distance": 5837,
+      "produits": [
+        {
+          "id": "produit-1",
+          "name": "Ordinateur portable",
+          "description": "Ordinateur portable de dernière génération",
+          "weight": 2.5,
+          "type": "Électronique",
+          "destination": "New York"
+        },
+        {
+          "id": "produit-2",
+          "name": "Smartphone",
+          "description": "Smartphone haut de gamme",
+          "weight": 0.3,
+          "type": "Électronique",
+          "destination": "New York"
+        }
+      ]
+    },
+    {
+      "typeCargaison": "Routiere",
+      "id": "cargaison-2",
+      "poidsMax": 5000,
+      "volumeMax": 10000,
+      "dateDepart": "2024-06-01T08:00:00.000Z",
+      "dateArrivee": "2024-06-07T16:00:00.000Z",
+      "startLocation": "Berlin",
+      "endLocation": "Madrid",
+      "distance": 2000,
+      "produits": [
+        {
+          "id": "produit-3",
+          "name": "Meubles",
+          "description": "Ensemble de meubles pour le salon",
+          "weight": 150,
+          "type": "Mobilier",
+          "destination": "Madrid"
+        }
+      ]
+    }
+  ]
+  
