@@ -1,5 +1,5 @@
 // Import des classes
-import { Aerienne, Maritime, Routiere, Alimentaire, Chimique, Fragile, Incassable, } from "./classes";
+import { Aerienne, Maritime, Routiere, Alimentaire, Chimique, Fragile, Incassable, } from "./classes.js";
 let map;
 // Navigation bar functionality
 document.addEventListener("DOMContentLoaded", () => {
@@ -429,34 +429,31 @@ function resetMap() {
     document.getElementById("end-location").value = "";
     document.getElementById("distance").value = "";
 }
-// Créer une instance de cargaison à partir des données récupérées du serveur
-// Récupérer les cargaisons existantes depuis le serveur
-function fetchExistingCargaisons() {
+function createCargaisonFromData(cargaisonData) {
+    const { typeCargaison, id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, } = cargaisonData;
+    switch (typeCargaison) {
+        case "Aerienne":
+            return new Aerienne(id, poidsMax, volumeMax, new Date(dateDepart), new Date(dateArrivee), startLocation, endLocation, distance);
+        case "Maritime":
+            return new Maritime(id, poidsMax, volumeMax, new Date(dateDepart), new Date(dateArrivee), startLocation, endLocation, distance);
+        case "Routiere":
+            return new Routiere(id, poidsMax, volumeMax, new Date(dateDepart), new Date(dateArrivee), startLocation, endLocation, distance);
+        default:
+            throw new Error("Type de cargaison non pris en charge.");
+    }
+}
+document.addEventListener("DOMContentLoaded", () => {
     fetch("http://localhost/projetCargaison/dist/dataHandler.php")
         .then((response) => response.json())
         .then((data) => {
-        // Traiter les données récupérées et les afficher dans l'interface utilisateur
         data.forEach((cargaisonData) => {
             const cargaison = createCargaisonFromData(cargaisonData);
             cargaisons.push(cargaison);
             addCargaisonToDOM(cargaison);
         });
     })
-        .catch((error) => console.error("Erreur lors de la récupération des cargaisons existantes:", error));
-}
-function createCargaisonFromData(cargaisonData) {
-    const { typeCargaison, id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, produits, } = cargaisonData;
-    switch (typeCargaison) {
-        case "Aerienne":
-            return new Aerienne(id, poidsMax, volumeMax, new Date(dateDepart), new Date(dateArrivee), startLocation, endLocation, distance, produits.map((product) => createProductFromData(product)));
-        case "Maritime":
-            return new Maritime(id, poidsMax, volumeMax, new Date(dateDepart), new Date(dateArrivee), startLocation, endLocation, distance, produits.map((product) => createProductFromData(product)));
-        case "Routiere":
-            return new Routiere(id, poidsMax, volumeMax, new Date(dateDepart), new Date(dateArrivee), startLocation, endLocation, distance, produits.map((product) => createProductFromData(product)));
-        default:
-            throw new Error("Type de cargaison non pris en charge.");
-    }
-}
+        .catch((error) => console.error("Erreur lors de la récupération des cargaisons:", error));
+});
 function addNewCargaisonToServer(cargaisonData) {
     fetch("http://localhost/projetCargaison/dist/dataHandler.php", {
         method: "POST",
@@ -476,5 +473,4 @@ function addNewCargaisonToServer(cargaisonData) {
     })
         .catch((error) => console.error("Erreur lors de l'ajout de la nouvelle cargaison:", error));
 }
-document.addEventListener("DOMContentLoaded", fetchExistingCargaisons);
 //# sourceMappingURL=test.js.map

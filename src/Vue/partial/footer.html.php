@@ -9550,10 +9550,13 @@ main {
 /* WEEKLY SCHEDULE */
 
 .weekly-schedule {
-  display: flex;
+    display: flex;
   flex-direction: column;
   overflow: auto;
   height: 130%;
+  position: absolute;
+  top: -15%;
+  width: 95%;
 }
 .weekly-schedule::-webkit-scrollbar {
   display: none;

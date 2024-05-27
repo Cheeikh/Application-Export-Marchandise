@@ -1,39 +1,54 @@
 <?php
-header('Content-Type: application/json');
+header("Content-Type: application/json");
+$method = $_SERVER['REQUEST_METHOD'];
+$filename = "/var/www/html/projetCargaison/dist/data/cargaisons.json";
 
-$filename = __DIR__ . '/dist/data/cargaisons.json';
-
-if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    // Lire le contenu du fichier JSON et le renvoyer
+function getCargaisons() {
+    global $filename;
     if (file_exists($filename)) {
-        $json = file_get_contents($filename);
-        echo $json;
+        $data = file_get_contents($filename);
+        echo $data;
     } else {
         echo json_encode([]);
     }
-} elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Récupérer les données JSON envoyées et les ajouter au fichier JSON
-    $postData = file_get_contents('php://input');
-    $newCargo = json_decode($postData, true);
+}
 
-    // Lire les cargaisons existantes
+function addCargaison($newCargaison) {
+    global $filename;
     if (file_exists($filename)) {
-        $json = file_get_contents($filename);
-        $cargos = json_decode($json, true);
+        $data = file_get_contents($filename);
+        $cargaisons = json_decode($data, true);
     } else {
-        $cargos = [];
+        $cargaisons = [];
     }
 
-    // Ajouter la nouvelle cargaison
-    $cargos[] = $newCargo;
+    // Add the new cargaison to the array
+    $cargaisons[] = $newCargaison;
 
-    // Écrire les données mises à jour dans le fichier JSON
-    file_put_contents($filename, json_encode($cargos, JSON_PRETTY_PRINT));
+    // Save the updated array back to the file
+    file_put_contents($filename, json_encode($cargaisons));
 
-    echo json_encode(['status' => 'success']);
+    // Return the newly added cargaison as response
+    echo json_encode($newCargaison);
+}
+
+if ($method === 'GET') {
+    getCargaisons();
+} elseif ($method === 'POST') {
+    $input = json_decode(file_get_contents('php://input'), true);
+
+    if (is_null($input)) {
+        http_response_code(400);
+        echo json_encode(["error" => "Invalid JSON"]);
+        exit;
+    }
+
+    // Add a unique ID to the new cargaison
+    $input['id'] = uniqid();
+
+    addCargaison($input);
 } else {
-    // Autres méthodes non autorisées
     http_response_code(405);
-    echo json_encode(['status' => 'error', 'message' => 'Method not allowed']);
+    echo json_encode(["error" => "Method not allowed"]);
 }
 ?>

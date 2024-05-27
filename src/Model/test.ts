@@ -570,25 +570,6 @@ function resetMap() {
   (document.getElementById("distance") as HTMLInputElement).value = "";
 }
 
-// Créer une instance de cargaison à partir des données récupérées du serveur
-
-
-// Récupérer les cargaisons existantes depuis le serveur
-function fetchExistingCargaisons() {
-  fetch("http://localhost/projetCargaison/dist/dataHandler.php")
-    .then((response) => response.json())
-    .then((data) => {
-      // Traiter les données récupérées et les afficher dans l'interface utilisateur
-      data.forEach((cargaisonData) => {
-        const cargaison = createCargaisonFromData(cargaisonData);
-        cargaisons.push(cargaison);
-        addCargaisonToDOM(cargaison);
-      });
-    })
-    .catch((error) =>
-      console.error("Erreur lors de la récupération des cargaisons existantes:", error)
-    );
-}
 
 
 function createCargaisonFromData(cargaisonData: any): Aerienne | Maritime | Routiere {
@@ -602,7 +583,6 @@ function createCargaisonFromData(cargaisonData: any): Aerienne | Maritime | Rout
     startLocation,
     endLocation,
     distance,
-    produits,
   } = cargaisonData;
 
   switch (typeCargaison) {
@@ -616,7 +596,6 @@ function createCargaisonFromData(cargaisonData: any): Aerienne | Maritime | Rout
         startLocation,
         endLocation,
         distance,
-        produits.map((product: any) => createProductFromData(product))
       );
     case "Maritime":
       return new Maritime(
@@ -628,7 +607,6 @@ function createCargaisonFromData(cargaisonData: any): Aerienne | Maritime | Rout
         startLocation,
         endLocation,
         distance,
-        produits.map((product: any) => createProductFromData(product))
       );
     case "Routiere":
       return new Routiere(
@@ -640,12 +618,28 @@ function createCargaisonFromData(cargaisonData: any): Aerienne | Maritime | Rout
         startLocation,
         endLocation,
         distance,
-        produits.map((product: any) => createProductFromData(product))
       );
     default:
       throw new Error("Type de cargaison non pris en charge.");
   }
 }
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  fetch("http://localhost/projetCargaison/dist/dataHandler.php")
+    .then((response) => response.json())
+    .then((data) => {
+      data.forEach((cargaisonData: any) => {
+        const cargaison = createCargaisonFromData(cargaisonData);
+        cargaisons.push(cargaison);
+        addCargaisonToDOM(cargaison);
+      });
+    })
+    .catch((error) =>
+      console.error("Erreur lors de la récupération des cargaisons:", error)
+    );
+});
+
 function addNewCargaisonToServer(cargaisonData: any) {
   fetch("http://localhost/projetCargaison/dist/dataHandler.php", {
     method: "POST",
@@ -667,4 +661,3 @@ function addNewCargaisonToServer(cargaisonData: any) {
       console.error("Erreur lors de l'ajout de la nouvelle cargaison:", error)
     );
 }
-document.addEventListener("DOMContentLoaded", fetchExistingCargaisons);
