@@ -785,6 +785,36 @@ function addNewCargaisonToServer(cargaisonData) {
       console.error("Erreur lors de l'ajout de la nouvelle cargaison:", error)
     );
 }
+function updateCargaisonOnServer(cargaisonId, updatedCargaisonData) {
+  fetch(`http://localhost/projetCargaison/dist/dataHandler.php?id=${cargaisonId}`, {
+    method: "PUT", // Utilisez "PATCH" si vous ne souhaitez mettre à jour que certaines propriétés
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(updatedCargaisonData),
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Erreur du réseau lors de la mise à jour de la cargaison");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      const updatedCargaison = createCargaisonFromData(data);
+      // Mettez à jour la cargaison dans le tableau local
+      const index = cargaisons.findIndex(c => c.id === cargaisonId);
+      if (index !== -1) {
+        cargaisons[index] = updatedCargaison;
+        // Mettez à jour l'affichage de la cargaison dans le DOM
+        updateCargaisonsDisplay();
+      }
+    })
+    .catch((error) => {
+      console.error("Erreur lors de la mise à jour de la cargaison:", error);
+    });
+}
+
+
 
 function filterCargaisons(searchTerm) {
   return cargaisons.filter((cargaison) => {
@@ -866,20 +896,21 @@ function displayFilteredCargaisons(filteredCargaisons) {
   });
 }
 function toggleCargaisonState(cargaisonId: string) {
-  const cargaisonid = getCargaisonById(cargaisonId);
-  console.log(cargaisonid);
-  if (cargaisonid) {
-    cargaisonid.etat = cargaisonid.etat === 'Ouverte' ? 'Fermée' : 'Ouverte';
+  const cargaison = getCargaisonById(cargaisonId);
+  console.log(cargaison);
+  if (cargaison) {
+    // Changez l'état de la cargaison localement
+    cargaison.etat = cargaison.etat === 'Ouverte' ? 'Fermée' : 'Ouverte';
+    updateCargaisonsDisplay();
 
-
-
+    // Mettez à jour l'état de la cargaison sur le serveur
+    updateCargaisonOnServer(cargaisonId, { etat: cargaison.etat });
 
     // Mettez à jour l'affichage des cargaisons
     displayAllCargaisons();
-    // Vous pouvez également mettre à jour l'état de la cargaison dans votre système backend si nécessaire
-     updateCargaisonsDisplay();
   }
 }
+
 
 function getCargaisonById(id: string): Aerienne | Maritime | Routiere | undefined {
   return cargaisons.find(cargaison => cargaison.id === id);
