@@ -89,8 +89,39 @@
 
 
 <!-- Contenue page cargaisons -->
-<!-- This is an example component -->
 <div class="max-w-2xl mx-auto hide page_cargaisons">
+  <!-- Champ de recherche -->
+  <input
+    type="text"
+    id="searchInput"
+    class="w-full px-3 py-2 mb-3 border border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-300"
+    placeholder="Rechercher une cargaison..."
+  />
+
+  <!-- Tableau des cargaisons -->
+  <table class="min-w-full divide-y divide-gray-200">
+    <thead class="bg-gray-50">
+      <tr>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          ID
+        </th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Type
+        </th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Date de départ
+        </th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Date d'arrivée
+        </th>
+        <!-- Ajoutez d'autres en-têtes de colonne au besoin -->
+      </tr>
+    </thead>
+    <tbody id="cargaisonTableBody" class="bg-white divide-y divide-gray-200">
+      <!-- Les lignes des cargaisons seront ajoutées ici dynamiquement -->
+    </tbody>
+  </table>
+</div>
 
 </div>
 
