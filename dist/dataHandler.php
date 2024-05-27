@@ -15,18 +15,35 @@ function getCargaisons() {
 
 function addCargaison($newCargaison) {
     global $filename;
-    if (file_exists($filename)) {
-        $data = file_get_contents($filename);
-        $cargaisons = json_decode($data, true);
-    } else {
-        $cargaisons = [];
+
+    // Create the file if it doesn't exist
+    if (!file_exists($filename)) {
+        if (!touch($filename)) {
+            http_response_code(500);
+            echo json_encode(["error" => "Failed to create the file"]);
+            exit;
+        }
     }
+
+    // Check if the file is writable
+    if (!is_writable($filename)) {
+        http_response_code(500);
+        echo json_encode(["error" => "File is not writable"]);
+        exit;
+    }
+
+    $data = file_get_contents($filename);
+    $cargaisons = json_decode($data, true) ?? [];
 
     // Add the new cargaison to the array
     $cargaisons[] = $newCargaison;
 
     // Save the updated array back to the file
-    file_put_contents($filename, json_encode($cargaisons));
+    if (file_put_contents($filename, json_encode($cargaisons)) === false) {
+        http_response_code(500);
+        echo json_encode(["error" => "Failed to save data"]);
+        exit;
+    }
 
     // Return the newly added cargaison as response
     echo json_encode($newCargaison);

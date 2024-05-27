@@ -40,7 +40,7 @@
 
           <div class="left-bottom">
             <div class="weekly-schedule">
-              <h1 class="text-2xl font-bold mb-4">Cargaison en Attente d'envoi</h1>
+              <h1 class="text-2xl font-bold mb-4">Cargaison en Attente</h1>
               <!-- Les cargaisons crées s'ajoute ici -->
               <div class="calendar"></div>
             </div>
@@ -89,6 +89,7 @@
 
 
 <!-- Contenue page cargaisons -->
+<div class="containArg">
 <div class="max-w-2xl mx-auto hide page_cargaisons">
   <!-- Champ de recherche -->
   <input
@@ -114,6 +115,22 @@
         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
           Date d'arrivée
         </th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Ville de départ
+        </th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Ville d'arrivée
+        </th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Distance (en KM)
+        </th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Statut 
+        </th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Etat
+        </th>
+        
         <!-- Ajoutez d'autres en-têtes de colonne au besoin -->
       </tr>
     </thead>
@@ -121,6 +138,7 @@
       <!-- Les lignes des cargaisons seront ajoutées ici dynamiquement -->
     </tbody>
   </table>
+</div>
 </div>
 
 </div>

@@ -1,5 +1,5 @@
   <script type="module" src="./dist/Model/test.js"></script>
-  <script  src="./node_modules/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 
 
@@ -9444,6 +9444,12 @@ main {
   overflow: hidden;
 }
 
+.containArg{
+    position: absolute;
+  top: 20%;
+  left: 10%;
+}
+
 /* LEFT CONTENT */
 
 .left-content {
@@ -10252,6 +10258,7 @@ main {
   padding-top: 3vw;
   height: 91%;
     overflow: auto;
+    width: 55%;
 
   /* Form input styles */
   input[type="text"],

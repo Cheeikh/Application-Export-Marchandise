@@ -169,6 +169,8 @@ export abstract class Cargaison {
   protected _startLocation: string;
   protected _endLocation: string;
   protected _distance: number;
+  protected _statut: string;
+  protected _etat: string;
 
   constructor(
     id: string,
@@ -178,7 +180,9 @@ export abstract class Cargaison {
     dateArrivee: Date,
     startLocation: string,
     endLocation: string,
-    distance: number
+    distance: number,
+    statut: string,
+    etat: string
   ) {
     this._id = id;
     this._poidsMax = poidsMax;
@@ -189,6 +193,8 @@ export abstract class Cargaison {
     this._startLocation = startLocation;
     this._endLocation = endLocation;
     this._distance = distance;
+    this._statut = statut;
+    this._etat = etat;
   }
 
   get id(): string {
@@ -231,6 +237,17 @@ export abstract class Cargaison {
 
   get distance(): number {
     return this._distance;
+  }
+
+  get statut(): string {
+    return this._statut;
+  }
+
+  get etat(): string {
+    return this._etat;
+  }
+  set etat(newEtat: string) {
+    this._etat = newEtat;
   }
 
   // Méthode pour obtenir le poids restant
@@ -317,9 +334,11 @@ export class Aerienne extends Cargaison {
     dateArrivee: Date,
     startLocation: string,
     endLocation: string,
-    distance: number
+    distance: number,
+    statut: string,
+    etat: string
   ) {
-    super(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance);
+    super(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat);
   }
 }
 
@@ -332,9 +351,11 @@ export class Maritime extends Cargaison {
     dateArrivee: Date,
     startLocation: string,
     endLocation: string,
-    distance: number
+    distance: number,
+    statut: string,
+    etat: string
   ) {
-    super(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance);
+    super(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat);
   }
 }
 
@@ -347,9 +368,11 @@ export class Routiere extends Cargaison {
     dateArrivee: Date,
     startLocation: string,
     endLocation: string,
-    distance: number
+    distance: number,
+    statut: string,
+    etat: string
   ) {
-    super(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance);
+    super(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat);
   }
 }
 

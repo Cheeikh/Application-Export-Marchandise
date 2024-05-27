@@ -53,13 +53,11 @@ document.addEventListener("DOMContentLoaded", () => {
     closeModalButton?.addEventListener("click", () => {
         modalBackground?.classList.add("hide");
         addProductModal?.classList.add("hide");
-        resetMap();
     });
     document.querySelectorAll(".close-modal").forEach((button) => {
         button.addEventListener("click", () => {
             modalBackground?.classList.add("hide");
             addProductModal?.classList.add("hide");
-            resetMap();
         });
     });
     // Ajouter un écouteur d'événements pour le changement de la date de départ
@@ -114,15 +112,17 @@ document.addEventListener("DOMContentLoaded", () => {
         fillMethodSelect.addEventListener("change", updateMaxValues);
         const arrivalDate = calculateArrivalDate(type, distance, departureDate);
         let cargaison;
+        let statut = "En attente";
+        let etat = "ouverte";
         switch (type) {
             case "Aerienne":
-                cargaison = new Aerienne(`cargaison-${cargaisonCounter}`, poidsMax, volumeMax, departureDate, arrivalDate, startLocation, endLocation, distance);
+                cargaison = new Aerienne(`cargaison-${cargaisonCounter}`, poidsMax, volumeMax, departureDate, arrivalDate, startLocation, endLocation, distance, statut, etat);
                 break;
             case "Routiere":
-                cargaison = new Routiere(`cargaison-${cargaisonCounter}`, poidsMax, volumeMax, departureDate, arrivalDate, startLocation, endLocation, distance);
+                cargaison = new Routiere(`cargaison-${cargaisonCounter}`, poidsMax, volumeMax, departureDate, arrivalDate, startLocation, endLocation, distance, statut, etat);
                 break;
             case "Maritime":
-                cargaison = new Maritime(`cargaison-${cargaisonCounter}`, poidsMax, volumeMax, departureDate, arrivalDate, startLocation, endLocation, distance);
+                cargaison = new Maritime(`cargaison-${cargaisonCounter}`, poidsMax, volumeMax, departureDate, arrivalDate, startLocation, endLocation, distance, statut, etat);
                 break;
             default:
                 showMessageModal("Type de cargaison non reconnu.", false);
@@ -130,8 +130,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         if (cargaison) {
             cargaisonCounter++;
-            cargaisons.push(cargaison);
-            const cargaisonData = {
+            /*       cargaisons.push(cargaison);
+             */ const cargaisonData = {
                 typeCargaison: type,
                 id: cargaison.id,
                 poidsMax: poidsMax,
@@ -141,6 +141,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 startLocation: startLocation,
                 endLocation: endLocation,
                 distance: distance,
+                statut: statut,
+                etat: etat
                 // Autres données de la cargaison selon vos besoins
             };
             addNewCargaisonToServer(cargaisonData);
@@ -148,7 +150,6 @@ document.addEventListener("DOMContentLoaded", () => {
             modalBackground?.classList.add("hide");
             cargaisonForm.reset();
             updateCargaisonsDisplay();
-            resetMap(); // Réinitialiser la carte
         }
     });
     function calculateArrivalDate(type, distance, departureDate) {
@@ -170,6 +171,10 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 // Fonction pour ajouter une cargaison au DOM
 function addCargaisonToDOM(cargaison) {
+    // Vérifiez si le statut est différent de "En attente"
+    if (cargaison.statut !== "En attente") {
+        return; // Ne pas ajouter cette cargaison au DOM
+    }
     const dayAndActivity = document.createElement("div");
     dayAndActivity.classList.add("day-and-activity");
     dayAndActivity.style.background = getRandomGradient();
@@ -188,6 +193,8 @@ function addCargaisonToDOM(cargaison) {
   <p><strong>Date de départ:</strong> ${cargaison.dateDepart.toLocaleDateString()}</p>
   <p><strong>Date d'arrivée:</strong> ${cargaison.dateArrivee.toLocaleDateString()}</p>
   <p><strong>Nombre de produits:</strong> ${cargaison.produits.length}</p>
+  <p><strong>Statut:</strong> ${cargaison.statut}</p>
+  <p><strong>Etat:</strong> ${cargaison.etat}</p>
 `;
     const addButton = document.createElement("button");
     addButton.classList.add("btn");
@@ -341,13 +348,12 @@ let startMarker;
 let endMarker;
 let startPoint = null;
 let endPoint = null;
+let routeLine;
 document.addEventListener("DOMContentLoaded", () => {
     // Initialize the map
-    map = L.map("map").setView([0, 0], 2);
-    // Use a lighter tile layer to improve loading speed
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: "© OpenStreetMap contributors",
+    const map = L.map('map').setView([51.505, -0.09], 13);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
     // Event listener to handle map click
     map.on("click", function (e) {
@@ -358,14 +364,16 @@ document.addEventListener("DOMContentLoaded", () => {
             startMarker.on("dragend", function () {
                 startPoint = startMarker.getLatLng();
                 reverseGeocode(startPoint, "start-location");
-                if (endPoint)
+                if (endPoint) {
                     calculateDistance();
+                    getRouteWithLandCheck(startPoint, endPoint);
+                }
             });
             startMarker.on("click", () => {
                 map.removeLayer(startMarker);
                 startPoint = null;
-                document.getElementById("start-location").value =
-                    "";
+                resetRoute();
+                document.getElementById("start-location").value = "";
                 document.getElementById("distance").value = "";
             });
         }
@@ -374,16 +382,18 @@ document.addEventListener("DOMContentLoaded", () => {
             endMarker = L.marker(endPoint, { draggable: true }).addTo(map);
             reverseGeocode(endPoint, "end-location");
             calculateDistance();
+            getRouteWithLandCheck(startPoint, endPoint);
             endMarker.on("dragend", function () {
                 endPoint = endMarker.getLatLng();
                 reverseGeocode(endPoint, "end-location");
                 calculateDistance();
+                getRouteWithLandCheck(startPoint, endPoint);
             });
             endMarker.on("click", () => {
                 map.removeLayer(endMarker);
                 endPoint = null;
-                document.getElementById("end-location").value =
-                    "";
+                resetRoute();
+                document.getElementById("end-location").value = "";
                 document.getElementById("distance").value = "";
             });
         }
@@ -413,47 +423,129 @@ document.addEventListener("DOMContentLoaded", () => {
     function calculateDistance() {
         if (startPoint && endPoint) {
             const distance = map.distance(startPoint, endPoint) / 1000; // Convert to km
-            document.getElementById("distance").value =
-                distance.toFixed(2);
+            document.getElementById("distance").value = distance.toFixed(2);
         }
     }
+    function getRouteWithLandCheck(start, end) {
+        checkIfOnLand(start, isStartOnLand => {
+            if (isStartOnLand) {
+                checkIfOnLand(end, isEndOnLand => {
+                    if (isEndOnLand) {
+                        // Both points are on land, draw route directly
+                        getRoute([start, end]);
+                    }
+                    else {
+                        // End point is not on land, find nearest land point and then draw route
+                        findNearestLandPoint(end, nearestLandPoint => {
+                            getRoute([start, nearestLandPoint, end]);
+                        });
+                    }
+                });
+            }
+            else {
+                // Start point is not on land, find nearest land point
+                findNearestLandPoint(start, nearestLandPoint => {
+                    checkIfOnLand(end, isEndOnLand => {
+                        if (isEndOnLand) {
+                            getRoute([nearestLandPoint, end]);
+                        }
+                        else {
+                            findNearestLandPoint(end, nearestLandPoint2 => {
+                                getRoute([nearestLandPoint, nearestLandPoint2, end]);
+                            });
+                        }
+                    });
+                });
+            }
+        });
+    }
+    function getRoute(points) {
+        const coordinates = points.map(p => `${p.lng},${p.lat}`).join(';');
+        const url = `https://router.project-osrm.org/route/v1/driving/${coordinates}?overview=full&geometries=geojson`;
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+            const route = data.routes[0].geometry;
+            if (routeLine) {
+                map.removeLayer(routeLine);
+            }
+            routeLine = L.geoJSON(route, { style: { color: 'blue' } }).addTo(map);
+        })
+            .catch(error => {
+            console.error("Error fetching routing data:", error);
+        });
+    }
+    function checkIfOnLand(latlng, callback) {
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${latlng.lat}&lon=${latlng.lng}`)
+            .then(response => response.json())
+            .then(data => {
+            const isOnLand = data.address && (data.address.city || data.address.town || data.address.village || data.address.country);
+            callback(isOnLand);
+        })
+            .catch(error => {
+            console.error("Error checking land status:", error);
+            callback(false);
+        });
+    }
+    function findNearestLandPoint(latlng, callback) {
+        // This is a simple heuristic; in a real application, you might want to use a more sophisticated approach.
+        let searchRadius = 0.1; // initial search radius in degrees
+        const searchStep = 0.1; // step to increase search radius
+        const searchLand = () => {
+            const points = [
+                L.latLng(latlng.lat + searchRadius, latlng.lng),
+                L.latLng(latlng.lat - searchRadius, latlng.lng),
+                L.latLng(latlng.lat, latlng.lng + searchRadius),
+                L.latLng(latlng.lat, latlng.lng - searchRadius),
+            ];
+            let foundLand = false;
+            points.forEach(point => {
+                checkIfOnLand(point, isOnLand => {
+                    if (isOnLand && !foundLand) {
+                        foundLand = true;
+                        callback(point);
+                    }
+                });
+            });
+            if (!foundLand) {
+                searchRadius += searchStep;
+                setTimeout(searchLand, 500); // retry after a delay
+            }
+        };
+        searchLand();
+    }
+    function resetRoute() {
+        if (routeLine) {
+            map.removeLayer(routeLine);
+        }
+    }
+    document.getElementById('reset-button').addEventListener('click', resetMap);
+    function resetMap() {
+        if (startMarker)
+            map.removeLayer(startMarker);
+        if (endMarker)
+            map.removeLayer(endMarker);
+        resetRoute();
+        startPoint = null;
+        endPoint = null;
+        document.getElementById("start-location").value = "";
+        document.getElementById("end-location").value = "";
+        document.getElementById("distance").value = "";
+    }
 });
-function resetMap() {
-    if (startMarker)
-        map.removeLayer(startMarker);
-    if (endMarker)
-        map.removeLayer(endMarker);
-    startPoint = null;
-    endPoint = null;
-    document.getElementById("start-location").value = "";
-    document.getElementById("end-location").value = "";
-    document.getElementById("distance").value = "";
-}
 function createCargaisonFromData(cargaisonData) {
-    const { typeCargaison, id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, } = cargaisonData;
+    const { typeCargaison, id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat } = cargaisonData;
     switch (typeCargaison) {
         case "Aerienne":
-            return new Aerienne(id, poidsMax, volumeMax, new Date(dateDepart), new Date(dateArrivee), startLocation, endLocation, distance);
+            return new Aerienne(id, poidsMax, volumeMax, new Date(dateDepart), new Date(dateArrivee), startLocation, endLocation, distance, statut, etat);
         case "Maritime":
-            return new Maritime(id, poidsMax, volumeMax, new Date(dateDepart), new Date(dateArrivee), startLocation, endLocation, distance);
+            return new Maritime(id, poidsMax, volumeMax, new Date(dateDepart), new Date(dateArrivee), startLocation, endLocation, distance, statut, etat);
         case "Routiere":
-            return new Routiere(id, poidsMax, volumeMax, new Date(dateDepart), new Date(dateArrivee), startLocation, endLocation, distance);
+            return new Routiere(id, poidsMax, volumeMax, new Date(dateDepart), new Date(dateArrivee), startLocation, endLocation, distance, statut, etat);
         default:
             throw new Error("Type de cargaison non pris en charge.");
     }
 }
-document.addEventListener("DOMContentLoaded", () => {
-    fetch("http://localhost/projetCargaison/dist/dataHandler.php")
-        .then((response) => response.json())
-        .then((data) => {
-        data.forEach((cargaisonData) => {
-            const cargaison = createCargaisonFromData(cargaisonData);
-            cargaisons.push(cargaison);
-            addCargaisonToDOM(cargaison);
-        });
-    })
-        .catch((error) => console.error("Erreur lors de la récupération des cargaisons:", error));
-});
 function addNewCargaisonToServer(cargaisonData) {
     fetch("http://localhost/projetCargaison/dist/dataHandler.php", {
         method: "POST",
@@ -462,10 +554,13 @@ function addNewCargaisonToServer(cargaisonData) {
         },
         body: JSON.stringify(cargaisonData),
     })
-        .then((response) => response.json())
+        .then((response) => {
+        if (!response.ok) {
+            throw new Error("Erreur du réseau lors de l'ajout de la cargaison");
+        }
+        return response.json();
+    })
         .then((data) => {
-        // Traiter la réponse du serveur après l'ajout de la cargaison
-        // Mettre à jour l'interface utilisateur si nécessaire
         const cargaison = createCargaisonFromData(data);
         cargaisons.push(cargaison);
         addCargaisonToDOM(cargaison);
@@ -473,17 +568,43 @@ function addNewCargaisonToServer(cargaisonData) {
     })
         .catch((error) => console.error("Erreur lors de l'ajout de la nouvelle cargaison:", error));
 }
-// Fonction pour filtrer les cargaisons en fonction de la recherche
 function filterCargaisons(searchTerm) {
     return cargaisons.filter((cargaison) => {
-        // Ajoutez les critères de filtrage supplémentaires ici si nécessaire
         return (cargaison.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
             cargaison.startLocation.toLowerCase().includes(searchTerm.toLowerCase()) ||
             cargaison.endLocation.toLowerCase().includes(searchTerm.toLowerCase()) ||
             cargaison.constructor.name.toLowerCase().includes(searchTerm.toLowerCase()));
     });
 }
-// Fonction pour afficher les cargaisons filtrées dans le tableau
+function displayAllCargaisons() {
+    const tableBody = document.getElementById("cargaisonTableBody");
+    tableBody.innerHTML = "";
+    cargaisons.forEach((cargaison) => {
+        const row = document.createElement("tr");
+        row.classList.add("bg-white");
+        row.innerHTML = `
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.id}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.constructor.name}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.dateDepart.toLocaleDateString()}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.dateArrivee.toLocaleDateString()}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.startLocation}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.endLocation}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.distance}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.statut}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.etat}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><button class="toggle-btn" data-id="${cargaison.id}">${cargaison.etat === 'Ouverte' ? 'Fermer' : 'Fermer'}</button></td>
+      <!-- Ajoutez d'autres colonnes ici -->
+    `;
+        tableBody.appendChild(row);
+    });
+    const toggleButtons = document.querySelectorAll('.toggle-btn');
+    toggleButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const cargaisonId = button.dataset.id;
+            toggleCargaisonState(cargaisonId);
+        });
+    });
+}
 function displayFilteredCargaisons(filteredCargaisons) {
     const tableBody = document.getElementById("cargaisonTableBody");
     tableBody.innerHTML = "";
@@ -498,20 +619,57 @@ function displayFilteredCargaisons(filteredCargaisons) {
       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.startLocation}</td>
       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.endLocation}</td>
       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.distance}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.statut}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.etat}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><button class="toggle-btn" data-id="${cargaison.id}">${cargaison.etat === 'Ouverte' ? 'Fermer' : 'Ouvrir'}</button></td>
       <!-- Ajoutez d'autres colonnes ici -->
     `;
         tableBody.appendChild(row);
+        const toggleButtons = document.querySelectorAll('.toggle-btn');
+        toggleButtons.forEach(button => {
+            // Vérification de type pour s'assurer que button est bien un HTMLButtonElement
+            if (button instanceof HTMLButtonElement) {
+                button.addEventListener('click', () => {
+                    const cargaisonId = button.dataset.id;
+                    if (cargaisonId) { // Vérifiez que dataset.id est défini
+                        toggleCargaisonState(cargaisonId);
+                    }
+                });
+            }
+        });
     });
 }
-// Écouteur d'événements pour le champ de recherche
-const searchInput = document.getElementById("searchInput");
-searchInput.addEventListener("input", () => {
-    const searchTerm = searchInput.value.trim();
-    const filteredCargaisons = filterCargaisons(searchTerm);
-    displayFilteredCargaisons(filteredCargaisons);
-});
-// Afficher toutes les cargaisons au chargement de la page
+function toggleCargaisonState(cargaisonId) {
+    const cargaisonid = getCargaisonById(cargaisonId);
+    console.log(cargaisonid);
+    if (cargaisonid) {
+        cargaisonid.etat = cargaisonid.etat === 'Ouverte' ? 'Fermée' : 'Ouverte';
+        // Mettez à jour l'affichage des cargaisons
+        displayAllCargaisons();
+        // Vous pouvez également mettre à jour l'état de la cargaison dans votre système backend si nécessaire
+        updateCargaisonsDisplay();
+    }
+}
+function getCargaisonById(id) {
+    return cargaisons.find(cargaison => cargaison.id === id);
+}
 document.addEventListener("DOMContentLoaded", () => {
-    displayFilteredCargaisons(cargaisons);
+    fetch("http://localhost/projetCargaison/dist/dataHandler.php")
+        .then((response) => response.json())
+        .then((data) => {
+        data.forEach((cargaisonData) => {
+            const cargaison = createCargaisonFromData(cargaisonData);
+            cargaisons.push(cargaison);
+            addCargaisonToDOM(cargaison);
+        });
+        displayAllCargaisons();
+    })
+        .catch((error) => console.error("Erreur lors de la récupération des cargaisons:", error));
+    const searchInput = document.getElementById("searchInput");
+    searchInput.addEventListener("input", () => {
+        const searchTerm = searchInput.value.trim();
+        const filteredCargaisons = filterCargaisons(searchTerm);
+        displayFilteredCargaisons(filteredCargaisons);
+    });
 });
 //# sourceMappingURL=test.js.map

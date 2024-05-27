@@ -142,7 +142,9 @@ export class Cargaison {
     _startLocation;
     _endLocation;
     _distance;
-    constructor(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance) {
+    _statut;
+    _etat;
+    constructor(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat) {
         this._id = id;
         this._poidsMax = poidsMax;
         this._volumeMax = volumeMax;
@@ -152,6 +154,8 @@ export class Cargaison {
         this._startLocation = startLocation;
         this._endLocation = endLocation;
         this._distance = distance;
+        this._statut = statut;
+        this._etat = etat;
     }
     get id() {
         return this._id;
@@ -182,6 +186,15 @@ export class Cargaison {
     }
     get distance() {
         return this._distance;
+    }
+    get statut() {
+        return this._statut;
+    }
+    get etat() {
+        return this._etat;
+    }
+    set etat(newEtat) {
+        this._etat = newEtat;
     }
     // Méthode pour obtenir le poids restant
     getPoidsRestant() {
@@ -250,18 +263,18 @@ export class Cargaison {
 // Sous-classes de Cargaison
 // Sous-classes de Cargaison
 export class Aerienne extends Cargaison {
-    constructor(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance) {
-        super(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance);
+    constructor(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat) {
+        super(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat);
     }
 }
 export class Maritime extends Cargaison {
-    constructor(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance) {
-        super(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance);
+    constructor(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat) {
+        super(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat);
     }
 }
 export class Routiere extends Cargaison {
-    constructor(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance) {
-        super(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance);
+    constructor(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat) {
+        super(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat);
     }
 }
 //# sourceMappingURL=classes.js.map
