@@ -306,12 +306,13 @@ function addCargaisonToDOM(cargaison: Aerienne | Maritime | Routiere) {
   <p><strong>Statut:</strong> ${cargaison.statut}</p>
   <p><strong>Etat:</strong> ${cargaison.etat}</p>
 `;
-  const addButton = document.createElement("button");
-  addButton.classList.add("btn");
-  addButton.innerText = "Ajouter un produit";
-  addButton.addEventListener("click", () => {
-    displayProductModal(cargaison);
-  });
+
+
+
+
+
+
+
 
   const sendButton = document.createElement("button");
   sendButton.classList.add("btn");
@@ -320,7 +321,16 @@ function addCargaisonToDOM(cargaison: Aerienne | Maritime | Routiere) {
 
   dayAndActivity.appendChild(day);
   dayAndActivity.appendChild(activity);
+  // Créez le bouton "Ajouter un produit" seulement si l'état est "ouverte"
+if (cargaison.etat === 'ouverte') {
+  const addButton = document.createElement("button");
+  addButton.classList.add("btn");
+  addButton.innerText = "Ajouter un produit";
+  addButton.addEventListener("click", () => {
+    displayProductModal(cargaison);
+  });
   dayAndActivity.appendChild(addButton);
+}
   dayAndActivity.appendChild(sendButton);
 
   const waitingCargaisonsContainer = document.querySelector(
@@ -834,6 +844,12 @@ function displayAllCargaisons() {
   cargaisons.forEach((cargaison) => {
     const row = document.createElement("tr");
     row.classList.add("bg-white");
+
+    const isOuverte = cargaison.etat === 'ouverte';
+    const buttonStyle = isOuverte
+      ? 'background-color: red; border-radius: 10px; color: white;'
+      : 'background-color: green; border-radius: 10px; color: white;';
+
     row.innerHTML = `
       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.id}</td>
       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.constructor.name}</td>
@@ -844,12 +860,11 @@ function displayAllCargaisons() {
       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.distance}</td>
       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.statut}</td>
       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.etat}</td>
-      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><button class="toggle-btn" data-id="${cargaison.id}">${cargaison.etat === 'Ouverte' ? 'Fermer' : 'Fermer'}</button></td>
-      <!-- Ajoutez d'autres colonnes ici -->
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><button class="toggle-btn" data-id="${cargaison.id}" style="${buttonStyle}">${isOuverte ? 'Fermer' : 'Ouvrir'}</button></td>
     `;
     tableBody.appendChild(row);
-    
   });
+
   const toggleButtons = document.querySelectorAll('.toggle-btn');
   toggleButtons.forEach(button => {
     button.addEventListener('click', () => {
@@ -866,6 +881,12 @@ function displayFilteredCargaisons(filteredCargaisons) {
   filteredCargaisons.forEach((cargaison) => {
     const row = document.createElement("tr");
     row.classList.add("bg-white");
+
+    const isOuverte = cargaison.etat === 'ouverte';
+    const buttonStyle = isOuverte
+      ? 'background-color: red; border-radius: 10px; color: white;height: 30px; width: 100px;'
+      : 'background-color: green; border-radius: 10px; color: white;height: 30px; width: 100px;';
+
     row.innerHTML = `
       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.id}</td>
       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.constructor.name}</td>
@@ -876,31 +897,26 @@ function displayFilteredCargaisons(filteredCargaisons) {
       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.distance}</td>
       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.statut}</td>
       <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.etat}</td>
-      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><button class="toggle-btn" data-id="${cargaison.id}">${cargaison.etat === 'Ouverte' ? 'Fermer' : 'Ouvrir'}</button></td>
-      <!-- Ajoutez d'autres colonnes ici -->
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500"><button class="toggle-btn" data-id="${cargaison.id}" style="${buttonStyle}">${isOuverte ? 'Fermer' : 'Ouvrir'}</button></td>
     `;
     tableBody.appendChild(row);
-    
-    const toggleButtons = document.querySelectorAll('.toggle-btn');
-    toggleButtons.forEach(button => {
-      // Vérification de type pour s'assurer que button est bien un HTMLButtonElement
-      if (button instanceof HTMLButtonElement) {
-        button.addEventListener('click', () => {
-          const cargaisonId = button.dataset.id;
-          if (cargaisonId) { // Vérifiez que dataset.id est défini
-            toggleCargaisonState(cargaisonId);
-          }
-        });
-      }
+  });
+
+  const toggleButtons = document.querySelectorAll('.toggle-btn');
+  toggleButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const cargaisonId = button.dataset.id;
+      toggleCargaisonState(cargaisonId);
     });
   });
 }
+
 function toggleCargaisonState(cargaisonId: string) {
   const cargaison = getCargaisonById(cargaisonId);
   console.log(cargaison);
   if (cargaison) {
     // Changez l'état de la cargaison localement
-    cargaison.etat = cargaison.etat === 'Ouverte' ? 'Fermée' : 'Ouverte';
+    cargaison.etat = cargaison.etat === 'ouverte' ? 'fermée' : 'ouverte';
     updateCargaisonsDisplay();
 
     // Mettez à jour l'état de la cargaison sur le serveur
@@ -910,6 +926,7 @@ function toggleCargaisonState(cargaisonId: string) {
     displayAllCargaisons();
   }
 }
+
 
 
 function getCargaisonById(id: string): Aerienne | Maritime | Routiere | undefined {
