@@ -1,5 +1,5 @@
 // Import des classes
-import { Aerienne, Maritime, Routiere, Alimentaire, Chimique, Fragile, Incassable, } from "./classes.js";
+import { Aerienne, Maritime, Routiere, Alimentaire, Chimique, Fragile, Incassable, } from "./classes";
 let map;
 // Navigation bar functionality
 document.addEventListener("DOMContentLoaded", () => {
@@ -473,4 +473,45 @@ function addNewCargaisonToServer(cargaisonData) {
     })
         .catch((error) => console.error("Erreur lors de l'ajout de la nouvelle cargaison:", error));
 }
+// Fonction pour filtrer les cargaisons en fonction de la recherche
+function filterCargaisons(searchTerm) {
+    return cargaisons.filter((cargaison) => {
+        // Ajoutez les critères de filtrage supplémentaires ici si nécessaire
+        return (cargaison.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            cargaison.startLocation.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            cargaison.endLocation.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            cargaison.constructor.name.toLowerCase().includes(searchTerm.toLowerCase()));
+    });
+}
+// Fonction pour afficher les cargaisons filtrées dans le tableau
+function displayFilteredCargaisons(filteredCargaisons) {
+    const tableBody = document.getElementById("cargaisonTableBody");
+    tableBody.innerHTML = "";
+    filteredCargaisons.forEach((cargaison) => {
+        const row = document.createElement("tr");
+        row.classList.add("bg-white");
+        row.innerHTML = `
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.id}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.constructor.name}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.dateDepart.toLocaleDateString()}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.dateArrivee.toLocaleDateString()}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.startLocation}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.endLocation}</td>
+      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${cargaison.distance}</td>
+      <!-- Ajoutez d'autres colonnes ici -->
+    `;
+        tableBody.appendChild(row);
+    });
+}
+// Écouteur d'événements pour le champ de recherche
+const searchInput = document.getElementById("searchInput");
+searchInput.addEventListener("input", () => {
+    const searchTerm = searchInput.value.trim();
+    const filteredCargaisons = filterCargaisons(searchTerm);
+    displayFilteredCargaisons(filteredCargaisons);
+});
+// Afficher toutes les cargaisons au chargement de la page
+document.addEventListener("DOMContentLoaded", () => {
+    displayFilteredCargaisons(cargaisons);
+});
 //# sourceMappingURL=test.js.map
