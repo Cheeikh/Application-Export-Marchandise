@@ -9446,8 +9446,8 @@ main {
 
 .containArg{
     position: absolute;
-  top: 20%;
-  left: 10%;
+  top: 6%;
+  left: 7%;
 }
 
 /* LEFT CONTENT */

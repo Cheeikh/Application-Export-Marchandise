@@ -90,7 +90,11 @@
 
 <!-- Contenue page cargaisons -->
 <div class="containArg">
-<div class="max-w-2xl mx-auto hide page_cargaisons">
+   
+<div class="max-w-2xl mx-auto hide page_cargaisons ">
+<div class="" style="margin-bottom: 5%;font-size: 2vw;">
+        Liste des cargaisons
+    </div>
   <!-- Champ de recherche -->
   <input
     type="text"
@@ -100,7 +104,7 @@
   />
 
   <!-- Tableau des cargaisons -->
-  <table class="min-w-full divide-y divide-gray-200">
+  <table class="min-w-full divide-y divide-gray-200 overflow-scroll">
     <thead class="bg-gray-50">
       <tr>
         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -129,6 +133,9 @@
         </th>
         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
           Etat
+        </th>
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+          Action
         </th>
         
         <!-- Ajoutez d'autres en-têtes de colonne au besoin -->
