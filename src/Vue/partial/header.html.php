@@ -38,7 +38,7 @@
             <b></b>
             <b></b>
             <a href="#" data-target="cargaisons" class="flex items-center space-x-2 text-gray-400 hover:text-white">
-              <i class="fa fa-user nav-icon"></i>
+              <i class="fa-solid fa-box nav-icon"></i>
               <span class="nav-text">Cargaisons</span>
             </a>
           </li>
@@ -46,16 +46,16 @@
             <b></b>
             <b></b>
             <a href="#" data-target="produits" class="flex items-center space-x-2 text-gray-400 hover:text-white">
-              <i class="fa fa-calendar-check nav-icon"></i>
+           <i class="fa-solid fa-cart-plus nav-icon"></i>
               <span class="nav-text">Produits</span>
             </a>
           </li>
           <li class="nav-item relative mb-4">
             <b></b>
             <b></b>
-            <a href="#" data-target="problemes" class="flex items-center space-x-2 text-gray-400 hover:text-white">
-              <i class="fa fa-person-running nav-icon"></i>
-              <span class="nav-text">Problémes</span>
+            <a href="#" data-target="archive" class="flex items-center space-x-2 text-gray-400 hover:text-white">
+            <i class="fa-solid fa-folder-open nav-icon"></i>
+              <span class="nav-text">Archives</span>
             </a>
           </li>
           <li class="nav-item relative mb-4">

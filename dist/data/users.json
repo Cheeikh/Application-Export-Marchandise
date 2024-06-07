@@ -1,0 +1,23 @@
+[
+    {
+      "email": "test@test.com",
+      "password": "passwordtest"
+    },
+    {
+      "email": "jane.smith@example.com",
+      "password": "securePass456"
+    },
+    {
+      "email": "alice.jones@example.com",
+      "password": "aliceInWonderland789"
+    },
+    {
+      "email": "bob.brown@example.com",
+      "password": "bobSecurePassword"
+    },
+    {
+      "email": "charlie.black@example.com",
+      "password": "charliePass456"
+    }
+  ]
+  

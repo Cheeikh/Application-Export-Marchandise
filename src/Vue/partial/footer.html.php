@@ -1,5 +1,6 @@
   <script type="module" src="./dist/Model/test.js"></script>
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com/dist/email.min.js"></script>
 
 
 
@@ -9263,6 +9264,8 @@
   min-height: 100%;
 }
 
+
+
 .logo_contain {
   height: 18%;
   width: 61%;
@@ -9445,11 +9448,74 @@ main {
 }
 
 .containArg{
-    position: absolute;
-  top: 6%;
-  left: 7%;
+ width: 96%;
+ height: 95%;
+ position: absolute;
+ left: 2%;
+ top: 2.5%;
+ display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+ .page_cargaisons {
+  border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: rgba(128, 128, 128, 0.2); /* Gris avec 50% de transparence */
+  padding: 5%;
+ }
+.tab-carg{
+  height: 60%;
+  overflow: auto;
+  overflow-y: none;
+}
+#pagination{
+  position: absolute;
+    bottom: 1%;
+}
+.tab-arch{
+  height: 70%;
+  overflow: auto;
+  overflow-y: none;
 }
 
+.page_produits {
+  border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: rgba(128, 128, 128, 0.2); /* Gris avec 50% de transparence */
+  padding: 5%;
+ }
+
+ .page_archive {
+  border-radius: 10px;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: rgba(128, 128, 128, 0.2); /* Gris avec 50% de transparence */
+  padding: 5%;
+ }
+
+.tab-prod{
+  height: 60%;
+  overflow: auto;
+  overflow-y: none;
+}
+
+}
+
+*::-webkit-scrollbar {
+  display: none;
+}
+.error-message{
+  background-color: red;
+  color: white;
+  text-align: center;
+  padding: 10px;
+  border-radius: 10px;
+}
 /* LEFT CONTENT */
 
 .left-content {
@@ -9458,6 +9524,8 @@ main {
   background: #f6f7fb;
   padding: 20px;
   border-radius: 15px;
+  z-index: 33;
+  position: relative;
 }
 
 /* ACTIVITIES */
@@ -9556,13 +9624,13 @@ main {
 /* WEEKLY SCHEDULE */
 
 .weekly-schedule {
-    display: flex;
-  flex-direction: column;
-  overflow: auto;
-  height: 130%;
-  position: absolute;
-  top: -15%;
-  width: 95%;
+  display: flex;
+    flex-direction: column;
+    overflow: auto;
+    height: 114%;
+    position: absolute;
+    top: -39%;
+    width: 95%;
 }
 .weekly-schedule::-webkit-scrollbar {
   display: none;
@@ -9901,7 +9969,8 @@ main {
 
 .friends-activity {
   display: flex;
-  flex-direction: column;
+    flex-direction: column;
+    height: 104vh;
 }
 
 .friends-activity h1 {
@@ -9912,8 +9981,12 @@ main {
 
 .card-container {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+    flex-direction: column;
+    gap: 10px;
+    z-index: 1000;
+    /* border: 2px solid; */
+    height: 78vh;
+    overflow: auto;
 }
 
 .card {
@@ -10223,6 +10296,7 @@ main {
   .activities,
   .weekly-schedule {
     margin-top: 10px;
+
   }
 
   .active-calories-container {
@@ -10287,17 +10361,34 @@ main {
     background-color: #e5e7eb;
   }
 }
+.confirm-btn {
+  background-color: green;
+    padding: 5px;
+    border-radius: 10px;
+    margin-right: 15px;
+    margin-top: 15px;
+  }
+  .cancel-btn{
+  background-color: red;
+    padding: 5px;
+    border-radius: 10px;
+    margin-top: 15px;
+  }
 
 #message-modal {
   .modal-content {
     background-color: #fff;
+    z-index: 1000;
     padding: 20px;
     border-radius: 8px;
     width: 90%;
     max-width: 500px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     position: relative;
+    max-height: 94%;
+        overflow: auto;
   }
+ 
   #message-text {
     text-align: center;
     font-size: 1.2em;
@@ -10315,6 +10406,7 @@ main {
 .hide {
   display: none;
 } 
+
 
 </style>
 </html>

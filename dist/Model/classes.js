@@ -4,6 +4,7 @@ const reglesCargaison = {
     Maritime: ["Materiel", "Chimique", "Alimentaire", "Incassable"],
     Routiere: ["Materiel", "Alimentaire", "Incassable", "Fragile"],
 };
+// Interface pour les produits calculables
 // Classes pour les frais fixes
 class FraisFixesAerienne {
     calculerFrais(kilometres, typeCargaison) {
@@ -20,6 +21,25 @@ class FraisFixesRoutiere {
         return 0; // Pas de frais fixes supplémentaires pour Routiere
     }
 }
+// Classe Client et Destinataire
+class Person {
+    nom;
+    prenom;
+    adresse;
+    numeroTelephone;
+    email;
+    constructor(nom, prenom, adresse, numeroTelephone, email) {
+        this.nom = nom;
+        this.prenom = prenom;
+        this.adresse = adresse;
+        this.numeroTelephone = numeroTelephone;
+        this.email = email;
+    }
+}
+export class Client extends Person {
+}
+export class Destinataire extends Person {
+}
 // Classe Produit
 export class Produit {
     _id;
@@ -27,27 +47,64 @@ export class Produit {
     _description;
     _poids;
     _destination;
-    constructor(id, nom, description, poids, destination) {
+    _client;
+    _destinataire;
+    type;
+    statut;
+    frais;
+    constructor(id, nom, description, poids, destination, client, destinataire, type, statut, frais) {
         this._id = id;
         this._nom = nom;
         this._description = description;
         this._poids = poids;
         this._destination = destination;
+        this._client = client;
+        this._destinataire = destinataire;
+        this.type = this.constructor.name;
+        this.statut = statut;
+        this.frais = frais;
     }
     get id() {
         return this._id;
     }
+    set id(value) {
+        this._id = value;
+    }
     get nom() {
         return this._nom;
+    }
+    set nom(value) {
+        this._nom = value;
     }
     get description() {
         return this._description;
     }
+    set description(value) {
+        this._description = value;
+    }
     get poids() {
         return this._poids;
     }
+    set poids(value) {
+        this._poids = value;
+    }
     get destination() {
         return this._destination;
+    }
+    set destination(value) {
+        this._destination = value;
+    }
+    get client() {
+        return this._client;
+    }
+    set client(value) {
+        this._client = value;
+    }
+    get destinataire() {
+        return this._destinataire;
+    }
+    set destinataire(value) {
+        this._destinataire = value;
     }
     info() {
         console.log(`ID: ${this._id}`);
@@ -55,6 +112,8 @@ export class Produit {
         console.log(`Description: ${this._description}`);
         console.log(`Poids: ${this._poids} kg`);
         console.log(`Destination: ${this._destination}`);
+        console.log(`Client: ${this._client.nom} ${this._client.prenom}`);
+        console.log(`Destinataire: ${this._destinataire.nom} ${this._destinataire.prenom}`);
     }
     ajouterProduit(cargaison) {
         if (cargaison.peutAjouterProduit(this)) {
@@ -64,8 +123,8 @@ export class Produit {
 }
 // Classe Materiel
 export class Materiel extends Produit {
-    constructor(id, nom, description, poids, destination) {
-        super(id, nom, description, poids, destination);
+    constructor(id, nom, description, poids, destination, client, destinataire, type, statut, frais) {
+        super(id, nom, description, poids, destination, client, destinataire, type, statut, frais);
     }
     calculerFrais(kilometres, typeCargaison) {
         switch (typeCargaison) {
@@ -80,20 +139,22 @@ export class Materiel extends Produit {
         }
     }
 }
+// Classe Fragile
 export class Fragile extends Materiel {
-    constructor(id, nom, description, poids, destination) {
-        super(id, nom, description, poids, destination);
+    constructor(id, nom, description, poids, destination, client, destinataire, type, statut, frais) {
+        super(id, nom, description, poids, destination, client, destinataire, type, statut, frais);
     }
 }
+// Classe Incassable
 export class Incassable extends Materiel {
-    constructor(id, nom, description, poids, destination) {
-        super(id, nom, description, poids, destination);
+    constructor(id, nom, description, poids, destination, client, destinataire, type, statut, frais) {
+        super(id, nom, description, poids, destination, client, destinataire, type, statut, frais);
     }
 }
 // Classe Alimentaire
 export class Alimentaire extends Produit {
-    constructor(id, nom, description, poids, destination) {
-        super(id, nom, description, poids, destination);
+    constructor(id, nom, description, poids, destination, client, destinataire, type, statut, frais) {
+        super(id, nom, description, poids, destination, client, destinataire, type, statut, frais);
     }
     calculerFrais(kilometres, typeCargaison) {
         switch (typeCargaison) {
@@ -112,8 +173,8 @@ export class Alimentaire extends Produit {
 export class Chimique extends Produit {
     _toxicite;
     frais;
-    constructor(id, nom, description, poids, destination, toxicite, frais) {
-        super(id, nom, description, poids, destination);
+    constructor(id, nom, description, poids, destination, toxicite, frais, client, destinataire, type, statut) {
+        super(id, nom, description, poids, destination, client, destinataire, type, statut, frais);
         this._toxicite = toxicite;
         this.frais = frais;
     }
@@ -144,7 +205,7 @@ export class Cargaison {
     _distance;
     _statut;
     _etat;
-    constructor(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat) {
+    constructor(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat, produits = []) {
         this._id = id;
         this._poidsMax = poidsMax;
         this._volumeMax = volumeMax;
@@ -156,6 +217,7 @@ export class Cargaison {
         this._distance = distance;
         this._statut = statut;
         this._etat = etat;
+        this._produits = produits;
     }
     get id() {
         return this._id;
@@ -190,6 +252,9 @@ export class Cargaison {
     get statut() {
         return this._statut;
     }
+    set statut(newStatut) {
+        this._statut = newStatut;
+    }
     get etat() {
         return this._etat;
     }
@@ -212,7 +277,8 @@ export class Cargaison {
         if (!this.peutAjouterProduit(produit)) {
             return;
         }
-        if (this.poids + produit.poids <= this._poidsMax && this.volume + 1 <= this._volumeMax) {
+        if (this.poids + produit.poids <= this._poidsMax &&
+            this.volume + 1 <= this._volumeMax) {
             this._produits.push(produit);
             console.log(`Produit "${produit.nom}" ajouté à la cargaison.`);
             console.log(`Montant total de la cargaison: ${this.sommeTotale(1)}`);
@@ -250,7 +316,9 @@ export class Cargaison {
     }
     sommeTotale(kilometres) {
         return this._produits.reduce((total, produit) => {
-            if (produit instanceof Materiel || produit instanceof Alimentaire || produit instanceof Chimique) {
+            if (produit instanceof Materiel ||
+                produit instanceof Alimentaire ||
+                produit instanceof Chimique) {
                 return total + produit.calculerFrais(kilometres, this.constructor.name);
             }
             return total;
@@ -259,22 +327,24 @@ export class Cargaison {
     get produits() {
         return this._produits;
     }
+    set produits(produits) {
+        this._produits = produits;
+    }
 }
 // Sous-classes de Cargaison
-// Sous-classes de Cargaison
 export class Aerienne extends Cargaison {
-    constructor(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat) {
-        super(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat);
+    constructor(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat, produits = []) {
+        super(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat, produits);
     }
 }
 export class Maritime extends Cargaison {
-    constructor(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat) {
-        super(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat);
+    constructor(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat, produits = []) {
+        super(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat, produits);
     }
 }
 export class Routiere extends Cargaison {
-    constructor(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat) {
-        super(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat);
+    constructor(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat, produits = []) {
+        super(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat, produits);
     }
 }
 //# sourceMappingURL=classes.js.map

@@ -6,28 +6,45 @@ const reglesCargaison: { [key: string]: string[] } = {
 };
 
 // Interface pour les produits calculables
-interface Calculable {
-  calculerFrais(kilometres: number, typeCargaison: string): number;
-}
+
 
 // Classes pour les frais fixes
-class FraisFixesAerienne implements Calculable {
+class FraisFixesAerienne  {
   calculerFrais(kilometres: number, typeCargaison: string): number {
     return 0; // Pas de frais fixes supplémentaires pour l'aérien
   }
 }
 
-class FraisFixesMaritime implements Calculable {
+class FraisFixesMaritime  {
   calculerFrais(kilometres: number, typeCargaison: string): number {
     return 5000; // Frais de chargement fixe pour Maritime
   }
 }
 
-class FraisFixesRoutiere implements Calculable {
+class FraisFixesRoutiere  {
   calculerFrais(kilometres: number, typeCargaison: string): number {
     return 0; // Pas de frais fixes supplémentaires pour Routiere
   }
 }
+
+interface Calculable {
+  calculerFrais(kilometres: number, typeCargaison: string): number;
+}
+
+// Classe Client et Destinataire
+class Person {
+  constructor(
+    public nom: string,
+    public prenom: string,
+    public adresse: string,
+    public numeroTelephone: string,
+    public email: string
+  ) {}
+}
+
+export class Client extends Person {}
+
+export class Destinataire extends Person {}
 
 // Classe Produit
 export class Produit {
@@ -36,33 +53,79 @@ export class Produit {
   private _description: string;
   private _poids: number;
   private _destination: string;
+  private _client: Client;
+  private _destinataire: Destinataire;
+  public type: string;
+  public statut: string;
+  public frais: number;
 
-  constructor(id: string, nom: string, description: string, poids: number, destination: string) {
+  constructor(id: string, nom: string, description: string, poids: number, destination: string, client: Client, destinataire: Destinataire, type: string, statut: string, frais: number) {
     this._id = id;
     this._nom = nom;
     this._description = description;
     this._poids = poids;
     this._destination = destination;
+    this._client = client;
+    this._destinataire = destinataire;
+    this.type = this.constructor.name;
+    this.statut = statut;
+    this.frais = frais;
   }
 
   get id(): string {
     return this._id;
   }
 
+  set id(value: string) {
+    this._id = value;
+  }
+
   get nom(): string {
     return this._nom;
+  }
+
+  set nom(value: string) {
+    this._nom = value;
   }
 
   get description(): string {
     return this._description;
   }
 
+  set description(value: string) {
+    this._description = value;
+  }
+
   get poids(): number {
     return this._poids;
   }
 
+  set poids(value: number) {
+    this._poids = value;
+  }
+
   get destination(): string {
     return this._destination;
+  }
+
+  set destination(value: string) {
+    this._destination = value;
+  }
+
+  get client(): Client {
+    return this._client;
+  }
+
+  set client(value: Client) {
+    this._client = value;
+  }
+
+  get destinataire(): Destinataire {
+    return this._destinataire;
+  }
+
+  set destinataire(value: Destinataire) {
+    this._destinataire = value;
   }
 
   info(): void {
@@ -71,6 +134,8 @@ export class Produit {
     console.log(`Description: ${this._description}`);
     console.log(`Poids: ${this._poids} kg`);
     console.log(`Destination: ${this._destination}`);
+    console.log(`Client: ${this._client.nom} ${this._client.prenom}`);
+    console.log(`Destinataire: ${this._destinataire.nom} ${this._destinataire.prenom}`);
   }
 
   ajouterProduit(cargaison: Cargaison): void {
@@ -81,9 +146,20 @@ export class Produit {
 }
 
 // Classe Materiel
-export class Materiel extends Produit implements Calculable {
-  constructor(id: string, nom: string, description: string, poids: number, destination: string) {
-    super(id, nom, description, poids, destination);
+export class Materiel extends Produit  {
+  constructor(
+    id: string,
+    nom: string,
+    description: string,
+    poids: number,
+    destination: string,
+    client: Client,
+    destinataire: Destinataire,
+    type: string,
+    statut: string,
+    frais: number
+  ) {
+    super(id, nom, description, poids, destination, client, destinataire, type, statut, frais);
   }
 
   calculerFrais(kilometres: number, typeCargaison: string): number {
@@ -100,22 +176,57 @@ export class Materiel extends Produit implements Calculable {
   }
 }
 
+// Classe Fragile
 export class Fragile extends Materiel {
-  constructor(id: string, nom: string, description: string, poids: number, destination: string) {
-    super(id, nom, description, poids, destination);
+  constructor(
+    id: string,
+    nom: string,
+    description: string,
+    poids: number,
+    destination: string,
+    client: Client,
+    destinataire: Destinataire,
+    type: string,
+    statut: string,
+    frais: number
+  ) {
+    super(id, nom, description, poids, destination, client, destinataire, type, statut, frais);
   }
 }
 
+// Classe Incassable
 export class Incassable extends Materiel {
-  constructor(id: string, nom: string, description: string, poids: number, destination: string) {
-    super(id, nom, description, poids, destination);
+  constructor(
+    id: string,
+    nom: string,
+    description: string,
+    poids: number,
+    destination: string,
+    client: Client,
+    destinataire: Destinataire,
+    type: string,
+    statut: string,
+    frais: number
+  ) {
+    super(id, nom, description, poids, destination, client, destinataire, type, statut, frais);
   }
 }
 
 // Classe Alimentaire
-export class Alimentaire extends Produit implements Calculable {
-  constructor(id: string, nom: string, description: string, poids: number, destination: string) {
-    super(id, nom, description, poids, destination);
+export class Alimentaire extends Produit  {
+  constructor(
+    id: string,
+    nom: string,
+    description: string,
+    poids: number,
+    destination: string,
+    client: Client,
+    destinataire: Destinataire,
+    type: string,
+    statut: string,
+    frais: number
+  ) {
+    super(id, nom, description, poids, destination, client, destinataire, type, statut, frais);
   }
 
   calculerFrais(kilometres: number, typeCargaison: string): number {
@@ -133,12 +244,24 @@ export class Alimentaire extends Produit implements Calculable {
 }
 
 // Classe Chimique
-export class Chimique extends Produit implements Calculable {
+export class Chimique extends Produit  {
   private _toxicite: number;
   frais: number;
 
-  constructor(id: string, nom: string, description: string, poids: number, destination: string, toxicite: number, frais: number) {
-    super(id, nom, description, poids, destination);
+  constructor(
+    id: string,
+    nom: string,
+    description: string,
+    poids: number,
+    destination: string,
+    toxicite: number,
+    frais: number,
+    client: Client,
+    destinataire: Destinataire,
+    type: string,
+    statut: string,
+  ) {
+    super(id, nom, description, poids, destination, client, destinataire, type, statut, frais);
     this._toxicite = toxicite;
     this.frais = frais;
   }
@@ -157,12 +280,13 @@ export class Chimique extends Produit implements Calculable {
   }
 }
 
+
 // Classe abstraite de Cargaison
 export abstract class Cargaison {
   protected _id: string;
   protected _poidsMax: number;
   protected _volumeMax: number;
-  protected _produits: Produit[] = [];
+   _produits: Produit[] = [];
   protected _poids: number;
   protected _dateDepart: Date;
   protected _dateArrivee: Date;
@@ -182,7 +306,8 @@ export abstract class Cargaison {
     endLocation: string,
     distance: number,
     statut: string,
-    etat: string
+    etat: string,
+    produits: Produit[] = []
   ) {
     this._id = id;
     this._poidsMax = poidsMax;
@@ -195,6 +320,7 @@ export abstract class Cargaison {
     this._distance = distance;
     this._statut = statut;
     this._etat = etat;
+    this._produits = produits;
   }
 
   get id(): string {
@@ -208,8 +334,6 @@ export abstract class Cargaison {
   get volume(): number {
     return this._produits.length;
   }
-
- 
 
   get dateDepart(): Date {
     return this._dateDepart;
@@ -243,6 +367,10 @@ export abstract class Cargaison {
     return this._statut;
   }
 
+  set statut(newStatut: string) {
+    this._statut = newStatut;
+  }
+
   get etat(): string {
     return this._etat;
   }
@@ -269,7 +397,10 @@ export abstract class Cargaison {
     if (!this.peutAjouterProduit(produit)) {
       return;
     }
-    if (this.poids + produit.poids <= this._poidsMax && this.volume + 1 <= this._volumeMax) {
+    if (
+      this.poids + produit.poids <= this._poidsMax &&
+      this.volume + 1 <= this._volumeMax
+    ) {
       this._produits.push(produit);
       console.log(`Produit "${produit.nom}" ajouté à la cargaison.`);
       console.log(`Montant total de la cargaison: ${this.sommeTotale(1)}`);
@@ -287,12 +418,16 @@ export abstract class Cargaison {
     const typesPermis = reglesCargaison[this.constructor.name];
     if (typesPermis && typesPermis.includes(produit.constructor.name)) {
       if (produit instanceof Fragile && this instanceof Maritime) {
-        console.log("Les produits fragiles ne peuvent pas être ajoutés à une cargaison maritime.");
+        console.log(
+          "Les produits fragiles ne peuvent pas être ajoutés à une cargaison maritime."
+        );
         return false;
       }
       return true;
     }
-    console.log("Le produit n'est pas destiné à être ajouté à cette cargaison.");
+    console.log(
+      "Le produit n'est pas destiné à être ajouté à cette cargaison."
+    );
     return false;
   }
 
@@ -310,20 +445,25 @@ export abstract class Cargaison {
 
   sommeTotale(kilometres: number): number {
     return this._produits.reduce((total, produit) => {
-      if (produit instanceof Materiel || produit instanceof Alimentaire || produit instanceof Chimique) {
+      if (
+        produit instanceof Materiel ||
+        produit instanceof Alimentaire ||
+        produit instanceof Chimique
+      ) {
         return total + produit.calculerFrais(kilometres, this.constructor.name);
       }
       return total;
     }, 0);
-}
-
+  }
 
   get produits(): Produit[] {
     return this._produits;
   }
+  set produits(produits: Produit[]) {
+    this._produits = produits;
+  }
 }
 
-// Sous-classes de Cargaison
 // Sous-classes de Cargaison
 export class Aerienne extends Cargaison {
   constructor(
@@ -336,9 +476,22 @@ export class Aerienne extends Cargaison {
     endLocation: string,
     distance: number,
     statut: string,
-    etat: string
+    etat: string,
+    produits: Produit[] = []
   ) {
-    super(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat);
+    super(
+      id,
+      poidsMax,
+      volumeMax,
+      dateDepart,
+      dateArrivee,
+      startLocation,
+      endLocation,
+      distance,
+      statut,
+      etat,
+      produits
+    );
   }
 }
 
@@ -353,9 +506,22 @@ export class Maritime extends Cargaison {
     endLocation: string,
     distance: number,
     statut: string,
-    etat: string
+    etat: string,
+    produits: Produit[] = []
   ) {
-    super(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat);
+    super(
+      id,
+      poidsMax,
+      volumeMax,
+      dateDepart,
+      dateArrivee,
+      startLocation,
+      endLocation,
+      distance,
+      statut,
+      etat,
+      produits
+    );
   }
 }
 
@@ -370,9 +536,21 @@ export class Routiere extends Cargaison {
     endLocation: string,
     distance: number,
     statut: string,
-    etat: string
+    etat: string,
+    produits: Produit[] = []
   ) {
-    super(id, poidsMax, volumeMax, dateDepart, dateArrivee, startLocation, endLocation, distance, statut, etat);
+    super(
+      id,
+      poidsMax,
+      volumeMax,
+      dateDepart,
+      dateArrivee,
+      startLocation,
+      endLocation,
+      distance,
+      statut,
+      etat,
+      produits
+    );
   }
 }
-

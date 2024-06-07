@@ -1,0 +1,114 @@
+{
+    "cargaisons": [
+        {
+            "typeCargaison": "Maritime",
+            "id": "75327273",
+            "poidsMax": 3445,
+            "volumeMax": 1000000,
+            "dateDepart": "2024-06-07T00:00:00.000Z",
+            "dateArrivee": "2024-06-08T00:00:00.000Z",
+            "startLocation": "Londres",
+            "endLocation": "Sevenoaks",
+            "distance": 24.25,
+            "statut": "En cours",
+            "etat": "ferm\u00e9e",
+            "produits": [
+                {
+                    "id": "17624644",
+                    "nom": "",
+                    "description": "VUUhPR7EWR",
+                    "poids": 5,
+                    "client": {
+                        "nom": "eO4XR5wQ0D",
+                        "prenom": "5bGBhvuPA9",
+                        "adresse": "tAqvLOaLAV",
+                        "numeroTelephone": "8950038365",
+                        "email": "cheeikhmbacke@gmail.com"
+                    },
+                    "destinataire": {
+                        "nom": "ryK9F2Nzke",
+                        "prenom": "zO3w684Rrx",
+                        "adresse": "GVWWpiUstC",
+                        "numeroTelephone": "6798862995",
+                        "email": "cheeikhmbacke@gmail.com"
+                    },
+                    "frais": 10912.5,
+                    "statut": "En cours"
+                },
+                {
+                    "id": "87233583",
+                    "nom": "",
+                    "description": "VUUhPR7EWR",
+                    "poids": 5,
+                    "client": {
+                        "nom": "eO4XR5wQ0D",
+                        "prenom": "5bGBhvuPA9",
+                        "adresse": "tAqvLOaLAV",
+                        "numeroTelephone": "8950038365",
+                        "email": "cheeikhmbacke@gmail.com"
+                    },
+                    "destinataire": {
+                        "nom": "ryK9F2Nzke",
+                        "prenom": "zO3w684Rrx",
+                        "adresse": "GVWWpiUstC",
+                        "numeroTelephone": "6798862995",
+                        "email": "cheeikhmbacke@gmail.com"
+                    },
+                    "frais": 10912.5,
+                    "statut": "En cours"
+                }
+            ]
+        },
+        {
+            "typeCargaison": "Maritime",
+            "id": "23531721",
+            "poidsMax": 45467,
+            "volumeMax": 1000000,
+            "dateDepart": "2024-06-07T00:00:00.000Z",
+            "dateArrivee": "2024-08-04T00:00:00.000Z",
+            "startLocation": "Cherwell",
+            "endLocation": "Liuta",
+            "distance": 1730.41,
+            "statut": "En cours",
+            "etat": "ferm\u00e9e",
+            "produits": [
+                {
+                    "id": "43716552",
+                    "nom": "FGFHGFGFG",
+                    "description": "Rmw7tVF11R",
+                    "poids": 5,
+                    "client": {
+                        "nom": "RPBgb44Bww",
+                        "prenom": "Tt1G08JK8R",
+                        "adresse": "zQjESD1k1h",
+                        "numeroTelephone": "3186970843",
+                        "email": "cheeikhmbacke@gmail.com"
+                    },
+                    "destinataire": {
+                        "nom": "nSfJPyPgva",
+                        "prenom": "qKk02sftmZ",
+                        "adresse": "Qyzt2D6wMD",
+                        "numeroTelephone": "0361149281",
+                        "email": "cheeikhmbacke@gmail.com"
+                    },
+                    "frais": 778684.5,
+                    "statut": "En cours"
+                }
+            ]
+        },
+        {
+            "typeCargaison": "Maritime",
+            "id": "96921679",
+            "poidsMax": 56756,
+            "volumeMax": 1000000,
+            "dateDepart": "2024-06-08T00:00:00.000Z",
+            "dateArrivee": "2024-06-14T00:00:00.000Z",
+            "startLocation": "Vale of White Horse",
+            "endLocation": "Cantorb\u00e9ry",
+            "distance": 175.07,
+            "statut": "En attente",
+            "etat": "ouverte",
+            "produits": []
+        }
+    ]
+}
