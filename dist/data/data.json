@@ -6,7 +6,7 @@
             "poidsMax": 3445,
             "volumeMax": 1000000,
             "dateDepart": "2024-06-07T00:00:00.000Z",
-            "dateArrivee": "2024-06-08T00:00:00.000Z",
+            "dateArrivee": "2024-06-09T00:00:00.000Z",
             "startLocation": "Londres",
             "endLocation": "Sevenoaks",
             "distance": 24.25,
@@ -37,7 +37,7 @@
                 },
                 {
                     "id": "87233583",
-                    "nom": "",
+                    "nom": "Une balle",
                     "description": "VUUhPR7EWR",
                     "poids": 5,
                     "client": {
@@ -55,7 +55,7 @@
                         "email": "cheeikhmbacke@gmail.com"
                     },
                     "frais": 10912.5,
-                    "statut": "En cours"
+                    "statut": "En attente"
                 }
             ]
         },

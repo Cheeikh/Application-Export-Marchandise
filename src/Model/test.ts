@@ -1708,19 +1708,18 @@ hideCargaisonButtonsBasedOnStatus(cargaison);
 
 
 // Écouter l'événement de soumission du formulaire de recherche
-document.getElementById("searchProductButton")?.addEventListener("click", (event) => {
-  console.log("Formulaire envoyé");
+document.getElementById("searchProductForm")?.addEventListener("submit", (event) => {
   event.preventDefault(); // Empêcher le formulaire de se soumettre
 
   // Récupérer la valeur du code de produit saisi dans le champ de recherche
   const productId = document.getElementById("default-search").value.trim();
 
   // Rechercher le produit correspondant dans votre liste de cargaisons
-  const product = findProductById(productId);
+  const result = findProductById(productId);
 
-  if (product) {
+  if (result) {
     // Afficher les détails du produit en utilisant le modèle fourni
-    displayProductDetails(product);
+    displayProductDetails(result.product, result.cargaison);
   } else {
     // Afficher un message d'erreur si aucun produit correspondant n'est trouvé
     showMessageModal("Aucun produit trouvé pour ce code", false);
@@ -1732,48 +1731,41 @@ function findProductById(productId) {
   for (const cargaison of cargaisons) {
     for (const product of cargaison.produits) {
       if (product.id === productId) {
-        return product;
+        return { product, cargaison };
       }
     }
   }
   return null; // Retourner null si aucun produit correspondant n'est trouvé
 }
 
+
 // Fonction pour afficher les détails du produit avec le modèle fourni
-function displayProductDetails(product) {
+function displayProductDetails(product, cargaison) {
   // Récupérer l'élément DOM pour la zone de produit
   const zoneProduit = document.querySelector(".zoneProduit");
 
-  // Remplir les détails du produit dans le modèle fourni
-  zoneProduit.innerHTML = `
-    <div class="max-w-md mx-auto rounded-md overflow-hidden shadow-md hover:shadow-lg">
-      <div class="relative">
-        <img class="w-full" src="${product.imageUrl}" alt="Product Image">
-        <div class="absolute top-0 right-0 bg-red-500 text-white px-2 py-1 m-2 rounded-md text-sm font-medium">${product.statut}</div>
-      </div>
-      <div class="p-4">
-        <h3 class="text-lg font-medium mb-2">${product.nom}</h3>
-        <p class="text-gray-600 text-sm mb-4">${product.description}</p>
-        <div class="flex items-center justify-between">
-          <span class="font-bold text-lg">${product.prix}</span>
-          <button class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">${product.arriveDans}</button>
-        </div>
-      </div>
-    </div>
-  `;
+  // Calculer le nombre de jours restants avant l'arrivée
+  const currentDate = new Date();
+  const arrivalDate = new Date(cargaison.dateArrivee);
+  const timeDiff = arrivalDate - currentDate;
+  const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)); // Convertir la différence en jours
+
+  // Mettre à jour les détails du produit dans le modèle fourni
+  zoneProduit.querySelector("#product-status").textContent = product.statut;
+  zoneProduit.querySelector("#product-name").textContent = product.nom;
+  zoneProduit.querySelector("#product-description").textContent = product.description;
+  zoneProduit.querySelector("#product-price").textContent = `${product.frais} Franc CFA`;
+  zoneProduit.querySelector("#product-arrival").textContent = `Arrive dans ${daysDiff} jours`;
 
   // Afficher la zone de produit
   zoneProduit.classList.remove("hide");
+
+  // Ajouter un gestionnaire d'événement pour fermer le modal de produit
+  document.getElementById("close-product-modal").addEventListener("click", () => {
+    zoneProduit.classList.add("hide");
+  });
 }
 
-// Fonction pour masquer la zone de produit
-function hideProductDetails() {
-  // Récupérer l'élément DOM pour la zone de produit
-  const zoneProduit = document.querySelector(".zoneProduit");
-
-  // Masquer la zone de produit
-  zoneProduit.classList.add("hide");
-}
 
 
 
@@ -2210,3 +2202,7 @@ function sendStatusUpdateEmail(cargaison, product, newStatus) {
 
 
 
+document.getElementById("logout")?.addEventListener("click", (event) => {
+  event.preventDefault();
+document.getElementById("PageClient")?.classList.remove("hide");
+});

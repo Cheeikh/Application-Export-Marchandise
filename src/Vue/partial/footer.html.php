@@ -9515,7 +9515,8 @@ main {
   text-align: center;
   padding: 10px;
   border-radius: 10px;
-}
+/*   z-index: 10000;
+ */}
 /* LEFT CONTENT */
 
 .left-content {
@@ -10376,6 +10377,7 @@ main {
   }
 
 #message-modal {
+  z-index: 10000;
   .modal-content {
     background-color: #fff;
     z-index: 1000;
@@ -10407,6 +10409,48 @@ main {
   display: none;
 } 
 
+
+
+.searchZone {
+            position: absolute;
+            height: 50vh;
+            width: 72vw;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #1F2937;
+            border-radius: 10px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tittle {
+            position: absolute;
+            color: white;
+            top: 17%;
+            font-size: 2vw;
+        }
+
+        .zoneProduit {
+            position: absolute;
+            padding: 10px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #1F2937;
+            border-radius: 10px;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: whitesmoke;
+        }
+
+        .hide {
+            display: none;
+        }
 
 </style>
 </html>

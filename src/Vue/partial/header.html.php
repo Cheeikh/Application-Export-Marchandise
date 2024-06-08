@@ -22,49 +22,58 @@
       <source src="./public/assets/seaport.mp4" type="video/mp4" />
     </video>
     <main class="grid">
-      <nav class="main-menu overflow-hidden bg-purple-700 pt-10 rounded-l-lg font-roboto">
-        <div class="logo_contain h-18 w-61 bg-cover bg-no-repeat bg-center mx-auto" >
-        </div>
-        <ul>
-          <li class="nav-item active relative mb-4">
+    <nav class="main-menu overflow-hidden bg-purple-700 pt-10 rounded-l-lg font-roboto">
+    <div class="logo_contain h-18 w-61 bg-cover bg-no-repeat bg-center mx-auto">
+    </div>
+    <ul>
+        <li class="nav-item active relative mb-4">
             <b></b>
             <b></b>
             <a href="#" data-target="acceuil" class="flex items-center space-x-2 text-gray-400 hover:text-white">
-              <i class="fa fa-house nav-icon"></i>
-              <span class="nav-text">Acceuil</span>
+                <i class="fa fa-house nav-icon"></i>
+                <span class="nav-text">Acceuil</span>
             </a>
-          </li>
-          <li class="nav-item relative mb-4">
+        </li>
+        <li class="nav-item relative mb-4">
             <b></b>
             <b></b>
             <a href="#" data-target="cargaisons" class="flex items-center space-x-2 text-gray-400 hover:text-white">
-              <i class="fa-solid fa-box nav-icon"></i>
-              <span class="nav-text">Cargaisons</span>
+                <i class="fa-solid fa-box nav-icon"></i>
+                <span class="nav-text">Cargaisons</span>
             </a>
-          </li>
-          <li class="nav-item relative mb-4">
+        </li>
+        <li class="nav-item relative mb-4">
             <b></b>
             <b></b>
             <a href="#" data-target="produits" class="flex items-center space-x-2 text-gray-400 hover:text-white">
-           <i class="fa-solid fa-cart-plus nav-icon"></i>
-              <span class="nav-text">Produits</span>
+                <i class="fa-solid fa-cart-plus nav-icon"></i>
+                <span class="nav-text">Produits</span>
             </a>
-          </li>
-          <li class="nav-item relative mb-4">
+        </li>
+        <li class="nav-item relative mb-4">
             <b></b>
             <b></b>
             <a href="#" data-target="archive" class="flex items-center space-x-2 text-gray-400 hover:text-white">
-            <i class="fa-solid fa-folder-open nav-icon"></i>
-              <span class="nav-text">Archives</span>
+                <i class="fa-solid fa-folder-open nav-icon"></i>
+                <span class="nav-text">Archives</span>
             </a>
-          </li>
-          <li class="nav-item relative mb-4">
+        </li>
+        <li class="nav-item relative mb-4">
             <b></b>
             <b></b>
             <a href="#" data-target="parametres" class="flex items-center space-x-2 text-gray-400 hover:text-white">
-              <i class="fa fa-sliders nav-icon"></i>
-              <span class="nav-text">Paramétres</span>
+                <i class="fa fa-sliders nav-icon"></i>
+                <span class="nav-text">Paramètres</span>
             </a>
-          </li>
-        </ul>
-      </nav>
+        </li>
+        <li class="nav-item relative mb-4">
+            <b></b>
+            <b></b>
+            <a href="#" id="logout" class="flex items-center space-x-2 text-gray-400 hover:text-white">
+                <i class="fa-solid fa-sign-out-alt nav-icon"></i>
+                <span class="nav-text">Se déconnecter</span>
+            </a>
+        </li>
+        
+    </ul>
+</nav>

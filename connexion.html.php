@@ -10,7 +10,7 @@
   <div class="shadow-[0_2px_16px_-3px_rgba(6,81,237,0.3)] max-w-6xl rounded-md p-6">
     <div class="grid md:grid-cols-2 items-center gap-8">
       <div class="max-md:order-1">
-        <img src="../../public/assets/logo.png" class="lg:w-11/12 w-full object-cover" alt="login-image" />
+        <img src="./public/assets/logo.png" class="lg:w-11/12 w-full object-cover" alt="login-image" />
       </div>
       <form id="loginForm" class="max-w-md w-full mx-auto">
         <div class="mb-12">
