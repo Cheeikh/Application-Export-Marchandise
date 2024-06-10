@@ -366,6 +366,32 @@ function displayProductModal(cargaison) {
                 console.error("Erreur lors de l'envoi des e-mails:", error);
             });
         }
+        // Envoi du SMS au client et au destinataire
+        function sendSMS(phoneNumber, message) {
+            const myHeaders = new Headers();
+            myHeaders.append("Authorization", "App 0871ada860439778d2e77af5aaf1dd04-3567be03-0b16-4598-b007-ae1ed1265f52");
+            myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("Accept", "application/json");
+            const raw = JSON.stringify({
+                "messages": [
+                    {
+                        "destinations": [{ "to": phoneNumber }],
+                        "from": "ServiceSMS",
+                        "text": message
+                    }
+                ]
+            });
+            const requestOptions = {
+                method: "POST",
+                headers: myHeaders,
+                body: raw,
+                redirect: "follow"
+            };
+            fetch("https://ggm42j.api.infobip.com/sms/2/text/advanced", requestOptions)
+                .then((response) => response.text())
+                .then((result) => console.log(result))
+                .catch((error) => console.error(error));
+        }
         if (!Number.isNaN(weight)) {
             if (cargaison.peutAjouterProduit(product)) {
                 if (cargaison.addProduit(product)) {
@@ -384,6 +410,12 @@ function displayProductModal(cargaison) {
                     addProduitToCargaisonOnServer(cargaison.id, produitData);
                     // Appel de la fonction pour envoyer un e-mail de confirmation
                     sendProductConfirmationEmail(client.email, destinataire.email, product.id, client.prenom, destinataire.prenom, cargaison.endLocation, cargaison.dateDepart, cargaison.dateArrivee, product.frais);
+                    // Envoi des messages SMS
+                    const smsMessageClient = `Bonjour ${client.prenom}, votre colis ${product.id} est en route vers ${destinataire.prenom}. Frais: ${product.frais} Franc CFA.`;
+                    const smsMessageRecipient = `Bonjour ${destinataire.prenom}, vous avez reçu un colis ${product.id} de ${client.prenom}. Frais: ${product.frais} Franc CFA.`;
+                    /*
+                              sendSMS(client.numeroTelephone, smsMessageClient);
+                              sendSMS(destinataire.numeroTelephone, smsMessageRecipient); */
                     if (cargaison.getVolumeRestant() <= 0) {
                         showMessageModal("Cargaison pleine. Impossible d'ajouter plus de produit.", false);
                     }
@@ -1127,8 +1159,9 @@ function updateCargaisonStatus(cargaisonId, newStatus, operationType) {
             ); */
     })
         .catch((error) => {
-        console.error("Erreur lors de la mise à jour du statut de la cargaison:", error);
-        showMessageModal("Erreur lors de la mise à jour du statut de la cargaison.", false);
+        //console.error("Erreur lors de la mise à jour du statut de la cargaison:", error);
+        //showMessageModal("Erreur lors de la mise à jour du statut de la cargaison.", false);
+        location.reload();
     });
 }
 document.getElementById("close-message-modal").addEventListener("click", () => {
@@ -1230,21 +1263,28 @@ function findProductById(productId) {
     }
     return null; // Retourner null si aucun produit correspondant n'est trouvé
 }
-// Fonction pour afficher les détails du produit avec le modèle fourni
 function displayProductDetails(product, cargaison) {
     // Récupérer l'élément DOM pour la zone de produit
     const zoneProduit = document.querySelector(".zoneProduit");
-    // Calculer le nombre de jours restants avant l'arrivée
+    // Calculer le nombre de jours restants avant l'arrivée ou le retard
     const currentDate = new Date();
     const arrivalDate = new Date(cargaison.dateArrivee);
     const timeDiff = arrivalDate - currentDate;
     const daysDiff = Math.ceil(timeDiff / (1000 * 60 * 60 * 24)); // Convertir la différence en jours
+    // Déterminer le texte à afficher pour l'arrivée
+    let arrivalText;
+    if (daysDiff > 0) {
+        arrivalText = `Arrive dans ${daysDiff} jours`;
+    }
+    else {
+        arrivalText = `En retard de ${Math.abs(daysDiff)} jours`;
+    }
     // Mettre à jour les détails du produit dans le modèle fourni
     zoneProduit.querySelector("#product-status").textContent = product.statut;
     zoneProduit.querySelector("#product-name").textContent = product.nom;
     zoneProduit.querySelector("#product-description").textContent = product.description;
     zoneProduit.querySelector("#product-price").textContent = `${product.frais} Franc CFA`;
-    zoneProduit.querySelector("#product-arrival").textContent = `Arrive dans ${daysDiff} jours`;
+    zoneProduit.querySelector("#product-arrival").textContent = arrivalText;
     // Afficher la zone de produit
     zoneProduit.classList.remove("hide");
     // Ajouter un gestionnaire d'événement pour fermer le modal de produit
@@ -1586,6 +1626,10 @@ function restoreItem(itemId, itemType) {
 }
 // Display all archived items
 displayArchivedCargaisonsOrProducts(cargaisons, "Archivé");
+document.getElementById("logout")?.addEventListener("click", (event) => {
+    event.preventDefault();
+    document.getElementById("PageClient")?.classList.remove("hide");
+});
 function displayCargaisonsEnCours(cargaisons) {
     const container = document.querySelector(".card-container");
     container.innerHTML = ""; // Clear previous content
@@ -1593,19 +1637,15 @@ function displayCargaisonsEnCours(cargaisons) {
     enCoursCargaisons.forEach(cargaison => {
         const nombreDeJours = Math.ceil((new Date(cargaison.dateArrivee).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
         const cardHTML = `
-            <div class="card bg-white p-4 rounded-lg shadow-md">
-                <div class="card-user-info mb-4">
-                    <h2 class="text-lg font-bold">Id de la cargaison: ${cargaison.id}</h2>
-                </div>
-                <img class="card-img w-full h-40 object-cover mb-4 rounded-lg" src="https://www.easyhaul.com/blog/wp-content/uploads/2022/12/Main-image-maritime-ports.png" alt="Cargaison envoyée" />
-                <p class="text-gray-600">Arrive dans ${nombreDeJours} jour${nombreDeJours > 1 ? 's' : ''}</p>
-            </div>
-        `;
+          <div class="card bg-white p-4 rounded-lg shadow-md">
+              <div class="card-user-info mb-4">
+                  <h2 class="text-lg font-bold">Id de la cargaison: ${cargaison.id}</h2>
+              </div>
+              <img class="card-img w-full h-40 object-cover mb-4 rounded-lg" src="https://www.easyhaul.com/blog/wp-content/uploads/2022/12/Main-image-maritime-ports.png" alt="Cargaison envoyée" />
+              <p class="text-gray-600">Arrive dans ${nombreDeJours} jour${nombreDeJours > 1 ? 's' : ''}</p>
+          </div>
+      `;
         container.innerHTML += cardHTML;
     });
 }
-document.getElementById("logout")?.addEventListener("click", (event) => {
-    event.preventDefault();
-    document.getElementById("PageClient")?.classList.remove("hide");
-});
 //# sourceMappingURL=test.js.map

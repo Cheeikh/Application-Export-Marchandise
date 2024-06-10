@@ -600,7 +600,7 @@
     <div class="close absolute top-4 left-4 w-8 cursor-pointer" id="close-product-modal">
       <i class="fa-solid fa-xmark text-xl"></i>
     </div>
-      <img class="w-full" src="https://images.unsplash.com/photo-1523275335684-37898b6baf30" alt="Product Image">
+      <img class="w-full" src="https://st2.depositphotos.com/1000128/9665/i/450/depositphotos_96658070-stock-photo-cardboard-box-isolated-on-white.jpg" alt="Product Image">
       <div class="absolute top-0 right-0 bg-red-500 text-white px-2 py-1 m-2 rounded-md text-sm font-medium" id="product-status">Statut du colis</div>
     </div>
     <div class="p-4">
